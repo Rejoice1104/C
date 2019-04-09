@@ -1,0 +1,130 @@
+//
+//  main.c
+//  堆排序
+//
+//  Created by 王博昊 on 2018/7/27.
+//  Copyright © 2018年 王博昊. All rights reserved.
+//
+
+#include <stdio.h>
+#include <string.h>
+#define N 100
+int Left(int i){
+    return 2*i+1;
+}
+
+int Right(int i){
+    return 2*i+2;
+}
+void Max_Heapify(int * a,int i,int size){
+    int max;
+    int t;
+    int l=Left(i);
+    int r=Right(i);
+    max=i;                  //取max的时候会出一些问题，得小心一点
+    if(l<size&&a[l]>a[max]){
+        max=l;
+    }
+    if(r<size&&a[r]>a[max]){
+        max=r;
+    }
+    if(max!=i){
+        t=a[i];
+        a[i]=a[max];
+        a[max]=t;
+        Max_Heapify(a, max, size);
+    }
+}
+
+void Min_Heapify(int * a,int i,int size){
+    int min;
+    int t;
+    int l=Left(i);
+    int r=Right(i);
+    min=i;                  //取min的时候会出一些问题，得小心一点
+    if(l<size&&a[l]<a[min]){
+        min=l;
+    }
+    if(r<size&&a[r]<a[min]){
+        min=r;
+    }
+    if(min!=i){
+        t=a[i];
+        a[i]=a[min];
+        a[min]=t;
+        Min_Heapify(a, min, size);
+    }
+}
+
+void Bulid_Max_Heap(int * a,int length){
+    for(int l=length/2-1;l>-1;l--){
+        Max_Heapify(a, l, length);
+    }
+}
+
+void Bulid_Min_Heap(int * a,int length){
+    for(int l=length/2-1;l>-1;l--){
+        Min_Heapify(a, l, length);
+    }
+}
+
+void Heap_Sort(int * a,int length,char * c){
+    int t;
+    int tag1,tag2;
+    char * max="max";
+    char * min="min";
+    tag1=strcmp(c,max);
+    tag2=strcmp(c,min);
+    if(tag1==0){
+        Bulid_Max_Heap(a, length);
+        for(int i=length-1;i>0;i--){
+            t=a[0];
+            a[0]=a[i];
+            a[i]=t;
+            length--;
+            Max_Heapify(a, 0, length);
+        }
+    }
+    else if(tag2==0){
+        Bulid_Min_Heap(a, length);
+        for(int i=length-1;i>0;i--){
+            t=a[0];
+            a[0]=a[i];
+            a[i]=t;
+            length--;
+            Min_Heapify(a, 0, length);
+        }
+    }
+}
+
+int main(int argc, const char * argv[]) {
+    int a[N];
+    int i=0;
+    char c[4];
+    int length=0;
+    int tag1,tag2;
+    char * max="max";
+    char * min="min";
+    printf("降序排列请输入：min\n升序排列请输入：max\n");
+    gets(c);
+    tag1=strcmp(c,max);
+    tag2=strcmp(c,min);
+    if(tag1==0||tag2==0){
+        printf("请键入一个长度不超过100的数组\n输入结束输入！\n");
+        while(i<N){
+            scanf("%d",&a[i]);
+            length++;
+            if(getchar()=='\n')
+                break;
+            i++;
+        }
+    }
+    else {
+        printf("排列方式选择错误!");
+    }
+    Heap_Sort(a, length, c);
+    for(i=0;i<length;i++){
+        printf("%5d",a[i]);
+    }
+    printf("\n");
+}
